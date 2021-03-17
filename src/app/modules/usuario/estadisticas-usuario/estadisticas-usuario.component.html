@@ -1,0 +1,32 @@
+<div class = 'main_container'>
+    <app-header [section]="'usuario'"></app-header>
+    <div class = "wrapper">
+        <section class = 'col-sm-12 whitePurpleContainer'>
+        <div class = "row whitePurpleContainer">
+            <div class = "col-sm-12">
+                <div class = 'title_container py-3 d-flex flex-column align-items-center'>
+                    <h4 i18n> 
+                        Estadísticas de Encuesta  
+                    </h4>
+                    <h4>
+                        <div *ngIf="survey">
+                            {{survey.title}}
+                        </div>
+                    </h4>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div *ngIf="survey">
+            <app-fechas-usuario [survey]="survey"></app-fechas-usuario>
+        </div>
+        <hr>
+        <div *ngIf="survey">
+            <div *ngFor="let question of survey.questions">
+                <app-graficas-usuario [question]="question"></app-graficas-usuario>
+            </div>
+        </div>
+        </section>
+    </div>
+    <app-footer [section]="'usuario'"></app-footer>
+</div>

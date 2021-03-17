@@ -1,0 +1,13 @@
+<div class="form-row">
+    <div class="col-lg-12 text-center">
+        <p class = "preguntaUsuario">{{question.title}}</p>
+    </div>
+</div>
+<div class="form-row pt-2">
+    <div class="col-lg-12 mb-2">
+        <div *ngFor="let option of question.options">
+            <input type="radio" id="opcion-{{option.id}}" name="{{question.title}}" value="opcion-{{option.id}}">
+            <label class = "pl-2" for="opcion-{{option.id}}">{{option.title}}</label><br>
+        </div>
+    </div>
+</div>

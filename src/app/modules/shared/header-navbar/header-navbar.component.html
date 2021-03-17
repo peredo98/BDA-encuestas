@@ -1,0 +1,40 @@
+<nav class="navbar navbar-expand-md fixed-top navbar-dark header-color">
+  <div class="container">
+    <div class="corner-ribbon top-left">Beta</div>
+    <button
+      type="button"
+      class="navbar-toggler"
+      data-toggle="collapse"
+      data-target="#navbarCollapse"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <div class="navbar-nav">
+        <a
+          routerLink="/"
+          [routerLinkActiveOptions]="{ exact: true }"
+          routerLinkActive="active current"
+          class="nav-item nav-link"
+          i18n
+          >Contestar</a
+        >
+        <a
+          [routerLinkActiveOptions]="{ exact: true }"
+          routerLink="/admin"
+          routerLinkActive="active current"
+          class="nav-item nav-link"
+          i18n
+          >Crear</a
+        >
+        <a
+          routerLink="/admin/listaEncuestas"
+          routerLinkActive="active current"
+          class="nav-item nav-link"
+          i18n
+          >Ver</a
+        >
+      </div>
+    </div>
+  </div>
+</nav>

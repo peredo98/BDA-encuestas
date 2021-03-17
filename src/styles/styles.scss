@@ -1,0 +1,41 @@
+@import '../bootstrap-4.4.1/scss/bootstrap';
+@import './config';
+@import "variables";
+* {
+  box-sizing: $styleBoxSize;
+  margin: $styleBoxMargin;
+  padding: $styleBoxPadding;
+}
+
+html {
+    height: $styleHtmlHeight;
+}
+
+body {
+  min-height: $styleBodyHeight;
+  display: $styleBodyDisplay;
+  flex-direction: $styleBodyDirection;
+  background-color: $soft-purple;
+}
+
+.title_container {
+  @include flexCenter($styleTitleContainerFlex);
+  padding: $styleBoxPadding;
+}
+
+.main_container {
+  @include flexCenter($styleMainContainerFlexCenter);
+  padding: $styleMainContainerPadding;
+  margin: $styleMainContainerMargin;
+  min-height: $styleMainContainerHeight;
+  flex: $styleMainContainerFlex;
+}
+
+.wrapper {
+  display: $styleWrapperDisplay;
+  flex: $styleWrapperFlex;
+}
+
+.whitePurpleContainer{
+background-color: $white-purple;
+}

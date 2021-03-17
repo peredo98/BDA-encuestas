@@ -1,0 +1,49 @@
+<div class = 'main_container'>
+    <app-header [section]="'admin'"></app-header>
+    <div class = "wrapper">
+        <section class = 'col-sm-12 whitePurpleContainer'>
+        <div class = "row whitePurpleContainer py-3">
+            <div class = "col-sm-12">
+                <div class = 'title_container d-flex flex-column align-items-center'>
+                    <h4 i18n> 
+                        Estadísticas de Encuesta
+                    </h4>
+                    <h4> 
+                        <div *ngIf="survey">
+                            {{survey.title}}
+                        </div>
+                    </h4>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div *ngIf="survey">
+            <app-fechas-admin [survey]="survey"></app-fechas-admin>
+        </div>
+       
+        <hr>
+        <div *ngIf="survey">
+            <div *ngFor="let question of survey.questions">
+                <div *ngIf="question">
+                    <app-graficas-admin [question]="question"></app-graficas-admin>
+                </div>
+            </div>
+        </div>
+       
+       
+
+        <div class = "row pt-3 pb-3 whitePurpleContainer justify-content-center">
+            <button (click)='goBack()' type="button" class="btn btn-secondary mr-2 align-self-center" i18n>Regresar</button>
+            <div *ngIf="survey">
+                <ng-container *ngIf="survey.resultsPublish; else elsePublish">
+                    <button (click)='togglePublish()' type="button" class="btn btn-warning ml-2" i18n>Ocultar</button>
+                </ng-container>
+                <ng-template #elsePublish>
+                    <button (click)='togglePublish()' type="button" class="btn btn-info ml-2" i18n>Publicar</button>
+                </ng-template>
+            </div>
+        </div>
+        </section>
+    </div>
+    <app-footer [section]="'admin'"></app-footer>
+</div>
