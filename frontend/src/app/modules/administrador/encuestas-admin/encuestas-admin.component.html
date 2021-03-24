@@ -1,7 +1,8 @@
 <div class = "table">
     <div class = "headerTable">
         <div class = "columnTable"><span class = "align-middle" i18n>Encuesta</span></div>
-        <div class = "columnTable"><span class = "align-middle" i18n>Fecha de cierre</span></div>
+        <div class = "columnTable"><span class = "align-middle" i18n>Descripción</span></div>
+        <div class = "columnTable"><span class = "align-middle" i18n>Fecha de creación</span></div>
         <div class = "columnTable"><span class = "align-middle"></span></div>
         <div class = "columnTable"><span class = "align-middle" i18n>Acción</span></div>
         <div class = "columnTable"><span class = "align-middle"></span></div>
@@ -9,7 +10,8 @@
     <ng-container *ngFor="let survey of surveys; let i = index">
         <div class = "rowTable">
             <div class = "columnTable"><p>{{survey.title}}</p></div>
-            <div class = "columnTable dates"><p>{{survey.endDate}}</p></div>
+            <div class = "columnTable"><p>{{survey.description}}</p></div>
+            <div class = "columnTable dates"><p>{{survey.creationDate | date: 'dd/MM/yyyy'}}</p></div>
             <ng-container *ngIf="survey.isPublish; else elsePublish">
                 <div (click)="toggleSurvey(survey)" class = "columnTable"><button type="button" class="btn btn-warning listbtn" i18n>Ocultar</button></div>
             </ng-container>
