@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, FormArray } from "@angular/forms";
 import { SurveyService } from "src/app/services/survey/survey.service";
 import { Router } from "@angular/router";
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: "app-crear-encuestas",
@@ -22,7 +23,7 @@ export class CrearEncuestasComponent implements OnInit {
       title: "",
       startDate: "",
       endDate: "",
-      creationDate: "",
+      creationDate: new DatePipe('en-US').transform(Date.now(), 'yyyy-MM-dd'),
       description: "",
       questions: this.formBuilder.array([]),
     });
@@ -72,7 +73,8 @@ export class CrearEncuestasComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   onSubmit(surveyData) {
     this.createSurvey(surveyData);

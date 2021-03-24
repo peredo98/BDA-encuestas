@@ -202,29 +202,28 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS addVotes;
 
 DELIMITER //
-CREATE PROCEDURE addVotes(IN _id INT, IN _option VARCHAR(255))
+CREATE PROCEDURE addVotes(IN _id INT, IN _option VARCHAR(255), IN _questionId INT)
 BEGIN
     DECLARE _votes int;
     DECLARE _optionId int;
-    DECLARE _questionId int;
     DECLARE _type varchar(255);
-    SELECT votes, options.id, questions.type, questions.id into _votes, _optionId, _type, _questionId
+    SELECT votes, options.id, questions.type into _votes, _optionId, _type
       FROM options
           RIGHT OUTER JOIN questions
               ON options.questionId = questions.id
                 RIGHT OUTER JOIN surveys ON questions.surveyId = surveys.id
-                    WHERE surveyId = _id AND optionName = _option;
+                    WHERE surveyId = _id AND questionId = _questionId AND optionName = _option;
 
 
     SET _votes = _votes + 1;
     UPDATE options SET votes=_votes WHERE id = _optionId;
 
     IF _optionId IS NULL THEN
-        SELECT questions.Id into _questionId from questions
-            RIGHT OUTER JOIN surveys s on questions.surveyId = s.id
-                WHERE surveyId = _id AND questions.type = 'OPEN';
-        INSERT into options (optionName, votes, questionId)
-          VALUES (_option, 1, _questionId);
+        SELECT type into _type from questions where id = _questionId;
+        IF _type = 'OPEN' THEN
+            INSERT into options (optionName, votes, questionId)
+              VALUES (_option, 1, _questionId);
+        END IF;
     END IF;
 END //
 DELIMITER ;

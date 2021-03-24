@@ -283,17 +283,22 @@ router.route("/surveys/:id_survey/addVotes").put(function (req, res) {
     return;
   }
 
-  console.log(selectedOptions);
-
-  selectedOptions.forEach((option) => {
-    db.query("call addVotes(?, ?);", [req.params.id_survey, option], function (
-      error,
-      rows
-    ) {
-      if (error) {
-        res.status(400).send(error);
-        return;
-      }
+  selectedOptions.forEach((answer) => {
+    if (!answer.options || !answer.questionId) {
+      res.status(400).send({ error: "Tiene que haber opciones seleccionadas" });
+      return;
+    }
+    let questionId = answer.questionId;
+    answer.options.forEach((option) => {
+      db.query("call addVotes(?, ?, ?);", [req.params.id_survey, option, questionId], function (
+        error,
+        rows
+      ) {
+        if (error) {
+          res.status(400).send(error);
+          return;
+        }
+      });
     });
   });
   res.status(200).send(req.body);

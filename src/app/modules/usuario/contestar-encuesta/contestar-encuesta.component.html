@@ -31,7 +31,7 @@
                     (change)="
                       onTextChange(
                         $event.target.value,
-                        'question-' + question._id
+                        question._id
                       )
                     "
                     type="radio"
@@ -46,7 +46,8 @@
                     (change)="
                       onItemChangeMulti(
                         $event.target.value,
-                        $event.target.checked
+                        $event.target.checked,
+                        question._id
                       )
                     "
                     type="checkbox"
@@ -71,7 +72,7 @@
                   (change)="
                     onTextChange(
                       $event.target.value,
-                      'question-' + question._id
+                      question._id
                     )
                   "
                   type="text"

@@ -13,7 +13,7 @@ import { HttpClient } from "@angular/common/http";
 export class ContestarEncuestaComponent implements OnInit {
   survey: Survey;
   sub;
-  selectedOptions: String[] = [];
+  selectedOptions = [];
   openAnswers: Record<string, String> = {};
 
   constructor(
@@ -32,6 +32,9 @@ export class ContestarEncuestaComponent implements OnInit {
   getSurveyById(id: String) {
     this.surveyService.getSurveyByID(id).subscribe((survey) => {
       this.survey = survey;
+      this.survey.questions.forEach((question) => {
+        this.selectedOptions.push({"questionId": question._id, "options": []});
+      });
       console.log(this.survey);
     });
   }
@@ -44,53 +47,34 @@ export class ContestarEncuestaComponent implements OnInit {
       });
   }
 
-  onItemChange(value: String, checked: boolean, event) {
-    console.log(event);
-    console.log(" Value is : ", value);
-    console.log(" Check is : ", checked);
-
-    if (checked) {
-      if (!this.selectedOptions.includes(value)) {
-        this.selectedOptions.push(value);
+  onItemChangeMulti(value: String, checked: boolean, id: String) {
+    this.selectedOptions.forEach((answer) => {
+      if(answer.questionId == id){
+        let options = answer.options;
+        if (checked) {
+          if (!options.includes(value)) {
+            options.push(value);
+          }
+        } else {
+          var index = options.indexOf(value);
+          if (index !== -1) {
+            options.splice(index, 1);
+          }
+        }  
       }
-    } else {
-      var index = this.selectedOptions.indexOf(value);
-      if (index !== -1) {
-        this.selectedOptions.splice(index, 1);
-      }
-    }
-
-    console.log(this.selectedOptions);
-  }
-
-  onItemChangeMulti(value: String, checked: boolean) {
-    console.log(" Value is : ", value);
-    console.log(" Check is : ", checked);
-
-    if (checked) {
-      if (!this.selectedOptions.includes(value)) {
-        this.selectedOptions.push(value);
-      }
-    } else {
-      var index = this.selectedOptions.indexOf(value);
-      if (index !== -1) {
-        this.selectedOptions.splice(index, 1);
-      }
-    }
-
-    console.log(this.selectedOptions);
+    });
   }
 
   onTextChange(value: String, id: String) {
-    console.log(this.openAnswers);
-    let key = `${id}`;
-    this.openAnswers[key] = value;
+    this.selectedOptions.forEach((answer) => {
+      if(answer.questionId == id){
+        answer.options = [value];
+      }
+    });
   }
 
   onSubmit() {
-    Object.values(this.openAnswers).forEach((element: String) => {
-      this.selectedOptions.push(element);
-    });
+    console.log(this.selectedOptions)
     this.AnswerSurvey();
   }
 }
