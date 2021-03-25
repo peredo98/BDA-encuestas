@@ -3,9 +3,6 @@ import { CommonModule } from "@angular/common";
 import { Routes, RouterModule } from "@angular/router";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 
-import { AuthGuard } from "./guards/auth.guard";
-import { from } from "rxjs";
-
 const routes: Routes = [
   { path: "", loadChildren: "./modules/usuario/usuario.module#UsuarioModule" },
   {

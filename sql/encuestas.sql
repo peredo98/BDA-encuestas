@@ -6,146 +6,198 @@ use surveys;
 
 -- TABLES CREATION
 
-CREATE TABLE IF NOT EXISTS surveys (
-	id int NOT NULL auto_increment,
-	title varchar(255),
-	description varchar(255),
-	startdate date,
-	enddate date,
-	creationdate date,
-	ispublish BOOLEAN,
-	resultspublish BOOLEAN,
-	PRIMARY KEY( id )
+CREATE TABLE IF NOT EXISTS surveys
+(
+    id             int NOT NULL auto_increment,
+    title          varchar(255),
+    description    varchar(255),
+    startdate      date,
+    enddate        date,
+    creationdate   date,
+    ispublish      BOOLEAN,
+    resultspublish BOOLEAN,
+    PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS questions (
-	id int NOT NULL auto_increment,
-	question varchar(255),
-	type varchar(255),
-	surveyId int,
-	PRIMARY KEY(id),
-    FOREIGN KEY(surveyId) REFERENCES surveys(id)
+CREATE TABLE IF NOT EXISTS questions
+(
+    id       int NOT NULL auto_increment,
+    question varchar(255),
+    type     varchar(255),
+    surveyId int,
+    PRIMARY KEY (id),
+    FOREIGN KEY (surveyId) REFERENCES surveys (id)
 );
 
-CREATE TABLE IF NOT EXISTS options (
-	id int NOT NULL auto_increment,
-	optionName varchar(255),
-	votes int,
-	questionId int,
-	PRIMARY KEY( id ),
-    FOREIGN KEY(questionId) REFERENCES questions(id)
+CREATE TABLE IF NOT EXISTS options
+(
+    id         int NOT NULL auto_increment,
+    optionName varchar(255),
+    votes      int,
+    questionId int,
+    PRIMARY KEY (id),
+    FOREIGN KEY (questionId) REFERENCES questions (id)
 );
+
+CREATE TABLE IF NOT EXISTS users
+(
+    id       int NOT NULL auto_increment,
+    name     varchar(255),
+    lastName varchar(255),
+    username varchar(255),
+    email    varchar(255),
+    password varchar(255),
+    isAdmin BOOLEAN,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS answers
+(
+    userId   int,
+    optionId int,
+    FOREIGN KEY (userId) REFERENCES users (id),
+    FOREIGN KEY (optionId) REFERENCES options (id)
+);
+
+-- INSERT DATA TABLES
+
+INSERT into users (name, lastName, username, email, password, isAdmin)
+    VALUES ('Emiliano', 'Peredo', 'peredo98', 'a01422326@itesm.mx', 'password', true);
 
 -- PROCEDURES
 DROP PROCEDURE IF EXISTS createSurvey;
 
 DELIMITER //
-CREATE PROCEDURE  createSurvey(IN _title VARCHAR(255),
-IN _description VARCHAR(255),
-IN _startdate date,
-IN _enddate date,
-IN _creationdate date,
-OUT _id int
+CREATE PROCEDURE createSurvey(IN _title VARCHAR(255),
+                              IN _description VARCHAR(255),
+                              IN _startdate date,
+                              IN _enddate date,
+                              IN _creationdate date,
+                              OUT _id int
 )
 BEGIN
-  INSERT into surveys (title, description, startdate, enddate, creationdate, ispublish, resultspublish)
-  VALUES (_title, _description, _startdate, _enddate, _creationdate, FALSE, FALSE);
-  SET _id = (SELECT LAST_INSERT_ID());
-  SELECT _id;
+    INSERT into surveys (title, description, startdate, enddate, creationdate, ispublish, resultspublish)
+    VALUES (_title, _description, _startdate, _enddate, _creationdate, FALSE, FALSE);
+    SET _id = (SELECT LAST_INSERT_ID());
+    SELECT _id;
 END //
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS createQuestion;
 
 DELIMITER //
-CREATE PROCEDURE  createQuestion(
-IN _title VARCHAR(255),
-IN _type VARCHAR(255),
-IN _surveyId int,
-OUT _id int
+CREATE PROCEDURE createQuestion(
+    IN _title VARCHAR(255),
+    IN _type VARCHAR(255),
+    IN _surveyId int,
+    OUT _id int
 )
 BEGIN
-  INSERT into questions (question, type, surveyId)
-  VALUES (_title, _type, _surveyId);
-  SET _id = (SELECT LAST_INSERT_ID());
-  SELECT _id;
+    INSERT into questions (question, type, surveyId)
+    VALUES (_title, _type, _surveyId);
+    SET _id = (SELECT LAST_INSERT_ID());
+    SELECT _id;
 END //
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS createOption;
 
 DELIMITER //
-CREATE PROCEDURE  createOption(
-IN _title VARCHAR(255),
-IN _questionId int,
-OUT _id int
+CREATE PROCEDURE createOption(
+    IN _title VARCHAR(255),
+    IN _questionId int,
+    OUT _id int
 )
 BEGIN
-  INSERT into options (optionName, votes, questionId)
-  VALUES (_title, 0, _questionId);
-  SET _id = (SELECT LAST_INSERT_ID());
-  SELECT _id;
+    INSERT into options (optionName, votes, questionId)
+    VALUES (_title, 0, _questionId);
+    SET _id = (SELECT LAST_INSERT_ID());
+    SELECT _id;
 END //
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS getSurveys;
 
 DELIMITER //
-CREATE PROCEDURE  getSurveys()
+CREATE PROCEDURE getSurveys()
 BEGIN
-  SELECT options.*, questions.id ,questions.question, questions.type, questions.surveyId, surveys.title, surveys.description, surveys.startdate, surveys.enddate, surveys.creationdate, surveys.ispublish,surveys.resultspublish
-      FROM options
-          RIGHT OUTER JOIN questions
-              ON options.questionId = questions.id
-                RIGHT OUTER JOIN surveys ON questions.surveyId = surveys.id;
+    SELECT options.*,
+           questions.id,
+           questions.question,
+           questions.type,
+           questions.surveyId,
+           surveys.title,
+           surveys.description,
+           surveys.startdate,
+           surveys.enddate,
+           surveys.creationdate,
+           surveys.ispublish,
+           surveys.resultspublish
+    FROM options
+             RIGHT OUTER JOIN questions
+                              ON options.questionId = questions.id
+             RIGHT OUTER JOIN surveys ON questions.surveyId = surveys.id;
 END //
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS getSurveyById;
 
 DELIMITER //
-CREATE PROCEDURE  getSurveyById(IN _id INT)
+CREATE PROCEDURE getSurveyById(IN _id INT)
 BEGIN
-  SELECT options.*,questions.id, questions.question, questions.type, questions.surveyId, surveys.title, surveys.description, surveys.startdate, surveys.enddate, surveys.creationdate, surveys.ispublish,surveys.resultspublish
-      FROM options
-          RIGHT OUTER JOIN questions
-              ON options.questionId = questions.id
-                RIGHT OUTER JOIN surveys ON questions.surveyId = surveys.id
-                    WHERE surveyId = _id;
+    SELECT options.*,
+           questions.id,
+           questions.question,
+           questions.type,
+           questions.surveyId,
+           surveys.title,
+           surveys.description,
+           surveys.startdate,
+           surveys.enddate,
+           surveys.creationdate,
+           surveys.ispublish,
+           surveys.resultspublish
+    FROM options
+             RIGHT OUTER JOIN questions
+                              ON options.questionId = questions.id
+             RIGHT OUTER JOIN surveys ON questions.surveyId = surveys.id
+    WHERE surveyId = _id;
 END //
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS deleteSurveyById;
 
 DELIMITER //
-CREATE PROCEDURE  deleteSurveyById(IN _id INT)
+CREATE PROCEDURE deleteSurveyById(IN _id INT)
 BEGIN
     DECLARE optionsId INT;
     DECLARE questionsId INT;
     DECLARE done INT DEFAULT 0;
 
     DECLARE options_cursor CURSOR FOR
-    SELECT options.id
-      FROM options
-          RIGHT OUTER JOIN questions
-              ON options.questionId = questions.id
-                RIGHT OUTER JOIN surveys ON questions.surveyId = surveys.id
-                    WHERE surveyId = _id;
+        SELECT options.id
+        FROM options
+                 RIGHT OUTER JOIN questions
+                                  ON options.questionId = questions.id
+                 RIGHT OUTER JOIN surveys ON questions.surveyId = surveys.id
+        WHERE surveyId = _id;
 
     DECLARE questions_cursor CURSOR FOR
-    SELECT questions.id
-      FROM questions
-              RIGHT OUTER JOIN surveys ON questions.surveyId = surveys.id
-                    WHERE surveyId = _id;
+        SELECT questions.id
+        FROM questions
+                 RIGHT OUTER JOIN surveys ON questions.surveyId = surveys.id
+        WHERE surveyId = _id;
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
     OPEN options_cursor;
-    options: LOOP
+    options:
+    LOOP
         FETCH options_cursor INTO optionsId;
         IF done = 1 THEN
             LEAVE options;
         END IF;
+        DELETE FROM answers where answers.optionId = optionsId;
         DELETE FROM options where id = optionsId;
     END LOOP options;
     CLOSE options_cursor;
@@ -153,7 +205,8 @@ BEGIN
     SET done = 0;
 
     OPEN questions_cursor;
-    questions: LOOP
+    questions:
+    LOOP
         FETCH questions_cursor INTO questionsId;
         IF done = 1 THEN
             LEAVE questions;
@@ -202,17 +255,20 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS addVotes;
 
 DELIMITER //
-CREATE PROCEDURE addVotes(IN _id INT, IN _option VARCHAR(255), IN _questionId INT)
+CREATE PROCEDURE addVotes(IN _id INT, IN _option VARCHAR(255), IN _questionId INT, IN _userId INT)
 BEGIN
     DECLARE _votes int;
     DECLARE _optionId int;
     DECLARE _type varchar(255);
-    SELECT votes, options.id, questions.type into _votes, _optionId, _type
-      FROM options
-          RIGHT OUTER JOIN questions
-              ON options.questionId = questions.id
-                RIGHT OUTER JOIN surveys ON questions.surveyId = surveys.id
-                    WHERE surveyId = _id AND questionId = _questionId AND optionName = _option;
+    SELECT votes, options.id, questions.type
+    into _votes, _optionId, _type
+    FROM options
+             RIGHT OUTER JOIN questions
+                              ON options.questionId = questions.id
+             RIGHT OUTER JOIN surveys ON questions.surveyId = surveys.id
+    WHERE surveyId = _id
+      AND questionId = _questionId
+      AND optionName = _option;
 
 
     SET _votes = _votes + 1;
@@ -222,8 +278,11 @@ BEGIN
         SELECT type into _type from questions where id = _questionId;
         IF _type = 'OPEN' THEN
             INSERT into options (optionName, votes, questionId)
-              VALUES (_option, 1, _questionId);
+            VALUES (_option, 1, _questionId);
+            SET _optionId = (SELECT LAST_INSERT_ID());
         END IF;
     END IF;
+
+    INSERT into answers (userId, optionId) VALUES (_userId, _optionId);
 END //
 DELIMITER ;

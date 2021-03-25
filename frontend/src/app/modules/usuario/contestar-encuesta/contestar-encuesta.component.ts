@@ -40,8 +40,9 @@ export class ContestarEncuestaComponent implements OnInit {
   }
 
   AnswerSurvey() {
+    // TODO: replace '1' with real user ID
     this.surveyService
-      .addVotes(this.survey, this.selectedOptions)
+      .addVotes(this.survey, this.selectedOptions, '1') //'1' is user ID 
       .subscribe((_) => {
         this.router.navigateByUrl("/");
       });
