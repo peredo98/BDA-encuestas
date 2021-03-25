@@ -276,6 +276,11 @@ router.route("/surveys/:id_survey/addVotes").put(function (req, res) {
     return;
   }
 
+  if (!req.body.userId) {
+    res.status(400).send({ error: "Tiene que responder un usuario" });
+    return;
+  }
+
   var selectedOptions = req.body.selectedOptions;
 
   if (selectedOptions.length == 0) {
@@ -290,7 +295,7 @@ router.route("/surveys/:id_survey/addVotes").put(function (req, res) {
     }
     let questionId = answer.questionId;
     answer.options.forEach((option) => {
-      db.query("call addVotes(?, ?, ?);", [req.params.id_survey, option, questionId], function (
+      db.query("call addVotes(?, ?, ?, ?);", [req.params.id_survey, option, questionId, req.body.userId], function (
         error,
         rows
       ) {
